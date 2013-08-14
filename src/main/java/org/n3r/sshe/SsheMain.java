@@ -24,7 +24,6 @@ public class SsheMain {
         System.out.println();
         System.out.println("==" + ssheHost.getHostInfo() + "==");
         System.out.println();
-        System.out.println();
 
         for (HostOperation operation : SsheConf.operations) {
             if (operation.matchSpecHost(ssheHost)) {
