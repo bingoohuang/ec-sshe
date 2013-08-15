@@ -22,7 +22,7 @@ public class SftpOperation extends HostOperation {
     }
 
     @Override
-    public void execute(SsheHost ssheHost, HostOperation lastOperation) {
+    protected void executeImpl(SsheHost ssheHost, HostOperation lastOperation) {
         System.out.println("[sftp] " + commandLine);
         try {
             Sftp.sftp(ssheHost.getSession(), cmd, p1, p2);

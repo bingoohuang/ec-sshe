@@ -13,7 +13,7 @@ public class ExecOperation extends HostOperation {
     }
 
     @Override
-    public void execute(SsheHost ssheHost, HostOperation lastOperation) {
+    protected void executeImpl(SsheHost ssheHost, HostOperation lastOperation) {
         ssheHost.tryCreateChannelShell();
 
         try {
@@ -28,6 +28,4 @@ public class ExecOperation extends HostOperation {
             throw Throwables.propagate(e);
         }
     }
-
-
 }

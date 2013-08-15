@@ -22,7 +22,7 @@ public class ScpOperation extends HostOperation {
     }
 
     @Override
-    public void execute(SsheHost ssheHost, HostOperation lastOperation) {
+    protected void executeImpl(SsheHost ssheHost, HostOperation lastOperation) {
         System.out.println("[scp] " + commandLine);
         try {
             Scp.scp(ssheHost.getSession(), p1, p2);

@@ -6,6 +6,7 @@ import com.jcraft.jsch.ChannelShell;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
+import org.n3r.sshe.operation.HostOperation;
 import org.n3r.sshe.ssh.Shell;
 
 import java.io.InputStreamReader;
@@ -33,7 +34,7 @@ public class SsheHost {
         this(host, ssheHost.getUser(), ssheHost.getPass());
     }
 
-    public void connect() {
+    private void connect() {
         JSch jSch = new JSch();
 
         try {
@@ -46,7 +47,7 @@ public class SsheHost {
         }
     }
 
-    public void disconnect() {
+    private void disconnect() {
         if (channelShell != null) {
             channelShell.disconnect();
             channelShell = null;
@@ -58,7 +59,7 @@ public class SsheHost {
         }
     }
 
-    public String getHostInfo() {
+    private String getHostInfo() {
         return user + "@" + host;
     }
 
@@ -94,6 +95,18 @@ public class SsheHost {
         }
     }
 
+    public void executeOperations() {
+        System.out.println("\r\n\r\n==" + getHostInfo() + "==\r\n\r\n");
+
+        connect();
+
+        HostOperation lastOperation = null;
+        for (HostOperation operation : SsheConf.operations)
+            lastOperation = operation.execute(this, lastOperation);
+
+        disconnect();
+    }
+
     public String getUser() {
         return user;
     }
@@ -117,4 +130,5 @@ public class SsheHost {
     public InputStreamReader getChannleOutput() {
         return channelOutput;
     }
+
 }

@@ -6,7 +6,6 @@ import org.n3r.sshe.SettingKey;
 import org.n3r.sshe.SsheConf;
 import org.n3r.sshe.SsheHost;
 
-import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PipedInputStream;
@@ -50,7 +49,7 @@ public class Shell {
         // Response text will add some \r and some other characters unexpected.
         int start = 0;
         int linePos = response.indexOf("\n");
-        while (linePos > 0 ) {
+        while (linePos > 0) {
             String line = response.substring(start, linePos);
             // Response text will add some \r and some other characters unexpected.
 

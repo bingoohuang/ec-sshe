@@ -10,7 +10,7 @@ import static org.apache.commons.lang3.StringUtils.substring;
 import static org.apache.commons.lang3.StringUtils.trim;
 
 public class SettingsParser implements SectionParser {
-    private static Pattern blankPattern = Pattern.compile("\\s+|:|=");
+    private static Pattern blankPattern = Pattern.compile("[:=]");
 
     private Map<String, String> settings;
 

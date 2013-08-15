@@ -37,10 +37,13 @@ public class SsheConf {
                 sectionParser = processSection(StringUtils.trim(line.substring(1)));
             } else if (sectionParser != null) {
                 sectionParser.parse(line);
+            } else {
+                logger.warn("line {} is not recognized", line);
             }
         }
-    }
 
+        br.close();
+    }
 
     private static SectionParser processSection(String sectionName) {
         if ("hosts".equals(sectionName)) return new HostsParser();

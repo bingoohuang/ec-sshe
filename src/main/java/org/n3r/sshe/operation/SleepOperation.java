@@ -17,7 +17,7 @@ public class SleepOperation extends HostOperation {
     }
 
     @Override
-    public void execute(SsheHost ssheHost, HostOperation lastOperation) {
+    protected void executeImpl(SsheHost ssheHost, HostOperation lastOperation) {
         System.out.println("[sleep] " + commandLine);
         Util.sleepMillis(sleepMillis);
     }

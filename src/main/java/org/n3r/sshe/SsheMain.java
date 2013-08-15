@@ -1,22 +1,26 @@
 package org.n3r.sshe;
 
 import org.apache.commons.cli.*;
-import org.n3r.sshe.operation.HostOperation;
 import org.n3r.sshe.util.Util;
 
 import java.io.File;
+import java.io.IOException;
 
 public class SsheMain {
     public static void main(String[] args) throws Exception {
         CommandLine commandLine = parseCommandLine(args);
-        File configurationFile = new File(commandLine.getOptionValue('f', "sshe.conf"));
 
         long start = System.currentTimeMillis();
-        SsheConf.parseConf(configurationFile);
-        batchRun();
-        System.out.println("\r\n");
+
+        parseConf(commandLine);
+        executeOperations();
+
         long costMillis = System.currentTimeMillis() - start;
-        System.out.println("==Over cost " + Util.humanReadableDuration(costMillis) + "==");
+        System.out.println("\r\n\r\n==Over cost " + Util.humanReadableDuration(costMillis) + "==");
+    }
+
+    private static void parseConf(CommandLine commandLine) throws IOException {
+        SsheConf.parseConf(new File(commandLine.getOptionValue('f', "sshe.conf")));
     }
 
     private static CommandLine parseCommandLine(String[] args) throws ParseException {
@@ -39,26 +43,9 @@ public class SsheMain {
         return commandLine;
     }
 
-    private static void batchRun() {
-        for (SsheHost ssheHost : SsheConf.ssheHosts) {
-            ssheHost.connect();
-            executeOperations(ssheHost);
-            ssheHost.disconnect();
-        }
-    }
-
-    private static void executeOperations(SsheHost ssheHost) {
-        System.out.println("\r\n");
-        System.out.println("==" + ssheHost.getHostInfo() + "==");
-        System.out.println("\r\n");
-        HostOperation lastOperation = null;
-
-        for (HostOperation operation : SsheConf.operations) {
-            if (operation.matchSpecHost(ssheHost)) {
-                operation.execute(ssheHost, lastOperation);
-                lastOperation = operation;
-            }
-        }
+    private static void executeOperations() {
+        for (SsheHost ssheHost : SsheConf.ssheHosts)
+            ssheHost.executeOperations();
     }
 
 }
