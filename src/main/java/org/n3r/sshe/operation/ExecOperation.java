@@ -13,10 +13,15 @@ public class ExecOperation extends HostOperation {
     }
 
     @Override
-    public void execute(SsheHost ssheHost) {
+    public void execute(SsheHost ssheHost, HostOperation lastOperation) {
         ssheHost.tryCreateChannelShell();
 
         try {
+            if (lastOperation != null && !(lastOperation instanceof ExecOperation)) {
+                IOUtils.write("\n", ssheHost.getOutputStream());
+                Shell.waitUntilExpect(ssheHost, "$");
+            }
+
             IOUtils.write(commandLine + "\n", ssheHost.getOutputStream());
             Shell.waitUntilExpect(ssheHost, "$");
         } catch (Exception e) {

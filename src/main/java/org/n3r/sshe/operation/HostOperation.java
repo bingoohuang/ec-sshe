@@ -7,7 +7,7 @@ import org.n3r.sshe.SsheHost;
 public abstract class HostOperation {
     private String specHost;
 
-    public abstract void execute(SsheHost ssheHost);
+    public abstract void execute(SsheHost ssheHost, HostOperation lastOperation);
 
     public void setSpecHost(String specHost) {
         this.specHost = specHost;

@@ -2,10 +2,8 @@ package org.n3r.sshe.parser;
 
 import org.apache.commons.lang3.StringUtils;
 import org.n3r.sshe.SsheConf;
-import org.n3r.sshe.operation.ExecOperation;
-import org.n3r.sshe.operation.HostOperation;
-import org.n3r.sshe.operation.ScpOperation;
-import org.n3r.sshe.operation.SftpOperation;
+import org.n3r.sshe.operation.*;
+import org.n3r.sshe.util.Substituters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,17 +23,18 @@ public class OperationsParser implements SectionParser {
 
     @Override
     public void parse(String line) {
+        String parsedLine = Substituters.parse(line, SsheConf.settings);
         String specHost = null;
-        if (line.startsWith("@")) {
-            int blankIndex = line.indexOf(' ');
+        if (parsedLine.startsWith("@")) {
+            int blankIndex = parsedLine.indexOf(' ');
             if (blankIndex > 0) {
-                specHost = line.substring(1, blankIndex);
-                line = line.substring(blankIndex);
-                line = StringUtils.trim(line);
+                specHost = parsedLine.substring(1, blankIndex);
+                parsedLine = parsedLine.substring(blankIndex);
+                parsedLine = StringUtils.trim(parsedLine);
             }
         }
 
-        Matcher matcher = commandTypePattern.matcher(line);
+        Matcher matcher = commandTypePattern.matcher(parsedLine);
         String commandType;
         String commandLine;
         if (matcher.matches()) {
@@ -43,7 +42,7 @@ public class OperationsParser implements SectionParser {
             commandLine = matcher.group(2);
         } else {
             commandType = "exec";
-            commandLine = line;
+            commandLine = parsedLine;
         }
 
         HostOperation operation = parseOperationCommand(commandType, commandLine);
@@ -54,15 +53,10 @@ public class OperationsParser implements SectionParser {
     }
 
     private HostOperation parseOperationCommand(String commandType, String commandLine) {
-        if ("exec".equals(commandType)) {
-            return new ExecOperation(commandLine);
-        }
-        if ("sftp".equals(commandType)) {
-            return new SftpOperation(commandLine);
-        }
-        if ("scp".equals(commandType)) {
-            return new ScpOperation(commandLine);
-        }
+        if ("exec".equals(commandType)) return new ExecOperation(commandLine);
+        if ("sftp".equals(commandType)) return new SftpOperation(commandLine);
+        if ("scp".equals(commandType)) return new ScpOperation(commandLine);
+        if ("sleep".equals(commandType)) return new SleepOperation(commandLine);
 
         logger.warn("unkown command type {}", commandType);
 

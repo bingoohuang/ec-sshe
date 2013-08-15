@@ -4,16 +4,14 @@ import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpProgressMonitor;
 import org.apache.commons.lang3.StringUtils;
+import org.n3r.sshe.util.Util;
 
 public class Sftp {
     public static void sftp(Session session, String cmd, String p1, String p2) throws Exception {
-        System.out.println(Util.currentTime() + "> " + cmd + " " + p1 + " " + p2);
         ChannelSftp channel = (ChannelSftp) session.openChannel("sftp");
         channel.connect();
 
-        if (cmd.equals("get") || cmd.equals("get-resume") || cmd.equals("get-append") ||
-                cmd.equals("put") || cmd.equals("put-resume") || cmd.equals("put-append")) {
-
+        if (Util.anyOf(cmd, "get", "get-resume", "get-append", "put", "put-resume", "put-append")) {
             SftpProgressMonitor monitor = new SsheProgressMonitor();
             if (cmd.startsWith("get")) {
                 int mode = ChannelSftp.OVERWRITE;
@@ -34,7 +32,6 @@ public class Sftp {
             }
         }
 
-        // System.out.println(Util.currentTime() + "> exit-status: " + channel.getExitStatus());
         channel.disconnect();
     }
 

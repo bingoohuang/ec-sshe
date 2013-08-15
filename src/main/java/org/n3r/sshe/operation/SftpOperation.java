@@ -14,16 +14,16 @@ public class SftpOperation extends HostOperation {
     public SftpOperation(String commandLine) {
         this.commandLine = commandLine;
         String[] fields = StringUtils.split(commandLine);
-        if (fields.length != 3) {
-            throw new RuntimeException(commandLine + " is invalid.");
-        }
+        if (fields.length != 3) throw new RuntimeException(commandLine + " is invalid.");
+
         this.cmd = fields[0];
         this.p1 = fields[1];
         this.p2 = fields[2];
     }
 
     @Override
-    public void execute(SsheHost ssheHost) {
+    public void execute(SsheHost ssheHost, HostOperation lastOperation) {
+        System.out.println("[sftp] " + commandLine);
         try {
             Sftp.sftp(ssheHost.getSession(), cmd, p1, p2);
         } catch (Exception e) {

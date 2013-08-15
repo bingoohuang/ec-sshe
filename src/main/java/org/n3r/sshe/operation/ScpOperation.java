@@ -6,9 +6,9 @@ import org.n3r.sshe.SsheHost;
 import org.n3r.sshe.ssh.Scp;
 
 public class ScpOperation extends HostOperation {
-    private final String commandLine;
     private final String p1;
     private final String p2;
+    private final String commandLine;
 
     public ScpOperation(String commandLine) {
         this.commandLine = commandLine;
@@ -22,7 +22,8 @@ public class ScpOperation extends HostOperation {
     }
 
     @Override
-    public void execute(SsheHost ssheHost) {
+    public void execute(SsheHost ssheHost, HostOperation lastOperation) {
+        System.out.println("[scp] " + commandLine);
         try {
             Scp.scp(ssheHost.getSession(), p1, p2);
         } catch (Exception e) {

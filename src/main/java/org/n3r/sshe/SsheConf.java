@@ -22,10 +22,9 @@ public class SsheConf {
     public static List<HostOperation> operations = Lists.newArrayList();
     public static Map<String, String> settings = Maps.newHashMap();
 
-    public static void parseConf() throws IOException {
-        File confFile = new File("sshe.conf");
+    public static void parseConf(File configurationFile) throws IOException {
         BufferedReader br = new BufferedReader(
-                new InputStreamReader(new FileInputStream(confFile), "UTF-8"));
+                new InputStreamReader(new FileInputStream(configurationFile), "UTF-8"));
 
         SectionParser sectionParser = null;
         for (String line = br.readLine(); line != null; line = br.readLine()) {

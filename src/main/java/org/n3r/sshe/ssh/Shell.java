@@ -6,6 +6,7 @@ import org.n3r.sshe.SettingKey;
 import org.n3r.sshe.SsheConf;
 import org.n3r.sshe.SsheHost;
 
+import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PipedInputStream;
@@ -43,20 +44,20 @@ public class Shell {
             excludeLinePatternParsed = true;
             String excludeLinePattern = SsheConf.settings.get(SettingKey.excludeLinePattern);
             if (StringUtils.isNotEmpty(excludeLinePattern))
-                Shell.excludeLinePattern = Pattern.compile(excludeLinePattern, Pattern.DOTALL);
+                Shell.excludeLinePattern = Pattern.compile(excludeLinePattern);
         }
 
-        if (excludeLinePattern == null) {
-            System.out.println(response);
-            return;
-        }
-
+        // Response text will add some \r and some other characters unexpected.
         int start = 0;
         int linePos = response.indexOf("\n");
         while (linePos > 0 ) {
-            String line = response.substring(start, linePos + 1);
-            if (!excludeLinePattern.matcher(line).find())
-                System.out.print(line);
+            String line = response.substring(start, linePos);
+            // Response text will add some \r and some other characters unexpected.
+
+            line = line.replaceAll("\r", "").replaceAll("(\\[\\w.)+$", "");
+
+            if (excludeLinePattern == null || !excludeLinePattern.matcher(line).find())
+                System.out.println(line);
 
             start = linePos + 1;
             if (start >= response.length()) break;

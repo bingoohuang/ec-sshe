@@ -3,6 +3,7 @@ package org.n3r.sshe.ssh;
 import com.google.common.io.Closeables;
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.Session;
+import org.n3r.sshe.util.Util;
 
 import java.io.*;
 
@@ -33,7 +34,6 @@ public class Scp {
         commandFileContent(lfile, out, in);
         out.close();
 
-        System.out.println(Util.currentTime() + "> exit-status: " + channel.getExitStatus());
         channel.disconnect();
     }
 
