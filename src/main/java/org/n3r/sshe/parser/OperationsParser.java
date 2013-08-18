@@ -19,6 +19,7 @@ public class OperationsParser implements SectionParser {
 
     public OperationsParser() {
         this.operations = SsheConf.operations;
+        this.operations.clear();
     }
 
     @Override

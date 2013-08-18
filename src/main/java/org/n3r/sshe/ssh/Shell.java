@@ -56,14 +56,14 @@ public class Shell {
             line = line.replaceAll("\r", "").replaceAll("(\\[\\w.)+$", "");
 
             if (excludeLinePattern == null || !excludeLinePattern.matcher(line).find())
-                System.out.println(line);
+                SsheConf.console.println(line);
 
             start = linePos + 1;
             if (start >= response.length()) break;
             linePos = response.indexOf("\n", start);
         }
 
-        System.out.print(response.substring(start));
+        SsheConf.console.print(response.substring(start));
     }
 
 

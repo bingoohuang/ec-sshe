@@ -4,6 +4,7 @@ import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpProgressMonitor;
 import org.apache.commons.lang3.StringUtils;
+import org.n3r.sshe.SsheConf;
 import org.n3r.sshe.util.Util;
 
 public class Sftp {
@@ -47,7 +48,7 @@ public class Sftp {
         public void init(int op, String src, String dest, long max) {
             this.max = max;
             count = 0;
-            System.out.print("SFTP processed ");
+            SsheConf.console.print("SFTP processed ");
         }
 
         public boolean count(long count) {
@@ -60,11 +61,11 @@ public class Sftp {
         public void end() {
             if (this.count > 0) reportProcess();
 
-            System.out.println();
+            SsheConf.console.println();
         }
 
         private void reportProcess() {
-            while (msgLength-- > 0) System.out.print('\b');
+            while (msgLength-- > 0) SsheConf.console.print("\b");
 
             sentSize += this.count;
             this.count = 0;
@@ -76,7 +77,7 @@ public class Sftp {
             if (msgLength < maxMsgLength) msg = msg + StringUtils.repeat(' ', maxMsgLength - msgLength);
             msgLength = maxMsgLength;
 
-            System.out.print(msg);
+            SsheConf.console.print(msg);
         }
     }
 }

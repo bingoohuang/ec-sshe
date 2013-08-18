@@ -14,6 +14,7 @@ public class HostsParser implements SectionParser {
 
     public HostsParser() {
         this.ssheHosts = SsheConf.ssheHosts;
+        this.ssheHosts.clear();
     }
 
     @Override
@@ -21,9 +22,9 @@ public class HostsParser implements SectionParser {
         String[] fields = StringUtils.split(line);
         SsheHost ssheHost = null;
         if (fields.length == 3) {
-            ssheHost = new SsheHost(fields[0], fields[1], fields[2]);
+            ssheHost = new SsheHost(ssheHosts.size(), fields[0], fields[1], fields[2]);
         } else if (fields.length == 1 && ssheHosts.size() > 0) {
-            ssheHost = new SsheHost(fields[0], ssheHosts.get(ssheHosts.size() - 1));
+            ssheHost = new SsheHost(ssheHosts.size(), fields[0], ssheHosts.get(ssheHosts.size() - 1));
         } else {
             logger.warn("host config {} is not valid", line);
         }

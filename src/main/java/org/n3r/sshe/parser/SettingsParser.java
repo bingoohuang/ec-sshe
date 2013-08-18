@@ -16,6 +16,7 @@ public class SettingsParser implements SectionParser {
 
     public SettingsParser() {
         this.settings = SsheConf.settings;
+        this.settings.clear();
     }
 
     @Override

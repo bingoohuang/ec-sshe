@@ -2,6 +2,7 @@ package org.n3r.sshe.operation;
 
 import com.google.common.base.Throwables;
 import org.apache.commons.lang3.StringUtils;
+import org.n3r.sshe.SsheConf;
 import org.n3r.sshe.SsheHost;
 import org.n3r.sshe.ssh.Scp;
 
@@ -23,7 +24,7 @@ public class ScpOperation extends HostOperation {
 
     @Override
     protected void executeImpl(SsheHost ssheHost, HostOperation lastOperation) {
-        System.out.println("[scp] " + commandLine);
+        SsheConf.console.println("[scp] " + commandLine);
         try {
             Scp.scp(ssheHost.getSession(), p1, p2);
         } catch (Exception e) {

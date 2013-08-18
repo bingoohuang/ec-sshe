@@ -16,6 +16,7 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 
 public class SsheHost {
+    private int hostIndex;
     private String host;
     private String user;
     private String pass;
@@ -24,14 +25,15 @@ public class SsheHost {
     private OutputStream outputStream;
     private InputStreamReader channelOutput;
 
-    public SsheHost(String host, String user, String pass) {
+    public SsheHost(int hostIndex, String host, String user, String pass) {
+        this.hostIndex = hostIndex;
         this.host = host;
         this.user = user;
         this.pass = pass;
     }
 
-    public SsheHost(String host, SsheHost ssheHost) {
-        this(host, ssheHost.getUser(), ssheHost.getPass());
+    public SsheHost(int hostIndex, String host, SsheHost ssheHost) {
+        this(hostIndex, host, ssheHost.getUser(), ssheHost.getPass());
     }
 
     private void connect() {
@@ -96,7 +98,8 @@ public class SsheHost {
     }
 
     public void executeOperations() {
-        System.out.println("\r\n\r\n==" + getHostInfo() + "==\r\n\r\n");
+        if (hostIndex > 0) SsheConf.console.println("\r\n");
+        SsheConf.console.println("== " + getHostInfo() + " ==\r\n");
 
         connect();
 

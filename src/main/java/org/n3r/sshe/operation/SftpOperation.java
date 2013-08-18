@@ -2,6 +2,7 @@ package org.n3r.sshe.operation;
 
 import com.google.common.base.Throwables;
 import org.apache.commons.lang3.StringUtils;
+import org.n3r.sshe.SsheConf;
 import org.n3r.sshe.SsheHost;
 import org.n3r.sshe.ssh.Sftp;
 
@@ -23,7 +24,7 @@ public class SftpOperation extends HostOperation {
 
     @Override
     protected void executeImpl(SsheHost ssheHost, HostOperation lastOperation) {
-        System.out.println("[sftp] " + commandLine);
+        SsheConf.console.println("[sftp] " + commandLine);
         try {
             Sftp.sftp(ssheHost.getSession(), cmd, p1, p2);
         } catch (Exception e) {

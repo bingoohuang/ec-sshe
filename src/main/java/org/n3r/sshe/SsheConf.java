@@ -21,11 +21,20 @@ public class SsheConf {
     public static List<SsheHost> ssheHosts = Lists.newArrayList();
     public static List<HostOperation> operations = Lists.newArrayList();
     public static Map<String, String> settings = Maps.newHashMap();
+    public static SsheOutput console;
 
+    public static void parseConf(String configurationContent) throws IOException {
+        BufferedReader br = new BufferedReader(new StringReader(configurationContent));
+        parseConfLines(br);
+    }
     public static void parseConf(File configurationFile) throws IOException {
         BufferedReader br = new BufferedReader(
                 new InputStreamReader(new FileInputStream(configurationFile), "UTF-8"));
 
+        parseConfLines(br);
+    }
+
+    private static void parseConfLines(BufferedReader br) throws IOException {
         SectionParser sectionParser = null;
         for (String line = br.readLine(); line != null; line = br.readLine()) {
             line = StringUtils.trim(line);

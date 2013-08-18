@@ -1,6 +1,7 @@
 package org.n3r.sshe.operation;
 
 import org.apache.commons.lang3.StringUtils;
+import org.n3r.sshe.SsheConf;
 import org.n3r.sshe.SsheHost;
 import org.n3r.sshe.util.Util;
 
@@ -18,7 +19,7 @@ public class SleepOperation extends HostOperation {
 
     @Override
     protected void executeImpl(SsheHost ssheHost, HostOperation lastOperation) {
-        System.out.println("[sleep] " + commandLine);
+        SsheConf.console.println("[sleep] " + commandLine);
         Util.sleepMillis(sleepMillis);
     }
 }
