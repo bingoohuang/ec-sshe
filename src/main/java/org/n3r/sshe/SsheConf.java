@@ -22,6 +22,7 @@ public class SsheConf {
     public static List<HostOperation> operations = Lists.newArrayList();
     public static Map<String, String> settings = Maps.newHashMap();
     public static SsheOutput console;
+    public static String key = "UpHJVmxF2GbXz3uMkGgmHw==";
 
     public static void parseConf(String configurationContent) throws IOException {
         BufferedReader br = new BufferedReader(new StringReader(configurationContent));

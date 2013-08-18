@@ -6,7 +6,9 @@ import com.jcraft.jsch.ChannelShell;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
+import static org.apache.commons.lang3.StringUtils.*;
 import org.n3r.sshe.operation.HostOperation;
+import org.n3r.sshe.security.AESEncrypter;
 import org.n3r.sshe.ssh.Shell;
 
 import java.io.InputStreamReader;
@@ -29,7 +31,15 @@ public class SsheHost {
         this.hostIndex = hostIndex;
         this.host = host;
         this.user = user;
-        this.pass = pass;
+        this.pass = parsePassword(pass);
+    }
+
+    private String parsePassword(String pass) {
+        if (startsWith(pass, "{AES}")) {
+            return new AESEncrypter(SsheConf.key).decrypt(substring(pass, 5));
+        }
+
+        return pass;
     }
 
     public SsheHost(int hostIndex, String host, SsheHost ssheHost) {

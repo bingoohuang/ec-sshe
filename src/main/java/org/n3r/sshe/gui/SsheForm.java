@@ -1,16 +1,21 @@
 package org.n3r.sshe.gui;
 
+import static org.apache.commons.lang3.StringUtils.*;
+
+import org.n3r.sshe.SsheConf;
 import org.n3r.sshe.SsheMain;
 import org.n3r.sshe.SsheOutput;
+import org.n3r.sshe.security.AESEncrypter;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.ByteArrayOutputStream;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintStream;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -24,6 +29,9 @@ public class SsheForm {
     private JTextArea textAreaConfig;
     private JTextArea textAreaResult;
     private JButton btnCleanResult;
+    private JTextField textFieldKey;
+    private JTextField textFieldDest;
+    private JTextField textFieldSource;
 
     public SsheForm(final ExecutorService executorService) {
         this.executorService = executorService;
@@ -67,9 +75,57 @@ public class SsheForm {
         btnCleanResult.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                textAreaResult.setText("");
+                textAreaResult.setText("" );
             }
         });
+
+        textFieldKey.setText(SsheConf.key);
+        // Listen for changes in the text
+        textFieldSource.getDocument().addDocumentListener(new DocumentListener() {
+            public void changedUpdate(DocumentEvent e) {
+                onTextFieldSourceChange();
+            }
+
+            public void removeUpdate(DocumentEvent e) {
+                onTextFieldSourceChange();
+            }
+
+            public void insertUpdate(DocumentEvent e) {
+                onTextFieldSourceChange();
+            }
+        });
+
+        textFieldDest.addFocusListener(new FocusListener() {
+
+            @Override
+            public void focusGained(FocusEvent e) {
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                onTextFieldDestChange();
+            }
+
+        });
+    }
+
+    public void onTextFieldDestChange() {
+        if (isEmpty(textFieldKey.getText())) return;
+        if (isEmpty(textFieldDest.getText())) return;
+        String text = trim(textFieldDest.getText());
+        if (startsWith(text, "{AES}" )) text = trim(substring(text, 5));
+
+        try {
+            textFieldSource.setText(new AESEncrypter(textFieldKey.getText()).decrypt(text));
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, "Fail to Decrypt", "Error Massage", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public void onTextFieldSourceChange() {
+        if (isEmpty(textFieldKey.getText())) textFieldKey.setText(AESEncrypter.createKey());
+
+        textFieldDest.setText("{AES}" + new AESEncrypter(textFieldKey.getText()).encrypt(textFieldSource.getText()));
     }
 
     public void updateTextArea(String str) {
@@ -87,7 +143,7 @@ public class SsheForm {
     public static void runGUI() {
         ExecutorService executorService = Executors.newSingleThreadExecutor();
 
-        JFrame frame = new JFrame("SSH-E GUI v0.2");
+        JFrame frame = new JFrame("SSH-E GUI v0.2.1" );
         frame.setContentPane(new SsheForm(executorService).panel1);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
@@ -97,4 +153,6 @@ public class SsheForm {
 
         frame.setVisible(true);
     }
+
 }
+
