@@ -35,11 +35,9 @@ public class SsheHost {
     }
 
     private String parsePassword(String pass) {
-        if (startsWith(pass, "{AES}")) {
-            return new AESEncrypter(SsheConf.key).decrypt(substring(pass, 5));
-        }
+        if (!startsWith(pass, "{AES}")) return pass;
 
-        return pass;
+        return new AESEncrypter(SsheConf.key).decrypt(substring(pass, 5));
     }
 
     public SsheHost(int hostIndex, String host, SsheHost ssheHost) {
@@ -98,10 +96,7 @@ public class SsheHost {
 
     public void setChannelOutput(PipedInputStream channelOutput) {
         try {
-            String charset = SsheConf.settings.get(SettingKey.charset);
-            if (charset == null) charset = Charset.defaultCharset().name();
-
-            this.channelOutput = new InputStreamReader(channelOutput, charset);
+            this.channelOutput = new InputStreamReader(channelOutput, SsheConf.getCharset());
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }

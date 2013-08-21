@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
 
@@ -63,5 +64,12 @@ public class SsheConf {
         logger.warn("section {} was not recognized", sectionName);
 
         return null;
+    }
+
+    public static String getCharset() {
+        String charset = settings.get(SettingKey.charset);
+        if (charset == null) charset = Charset.defaultCharset().name();
+
+        return charset;
     }
 }

@@ -11,15 +11,21 @@ public class SsheMain {
     public static void main(String[] args) throws Exception {
         CommandLine commandLine = parseCommandLine(args);
 
+        File configFile = new File(commandLine.getOptionValue('f', "sshe.conf"));
+        if (!configFile.exists()) {
+            System.err.println("config file does not exists or unspecified1");
+            System.exit(-1);
+        }
+
         if (commandLine.hasOption('g')) {
-            SsheForm.runGUI();
+            SsheForm.runGUI(configFile);
             return;
         }
 
-        runAscommandLine(commandLine);
+        runAscommandLine(configFile);
     }
 
-    private static void runAscommandLine(CommandLine commandLine) throws IOException {
+    private static void runAscommandLine(File configFile) throws IOException {
         long start = System.currentTimeMillis();
 
         SsheConf.console = new SsheOutput() {
@@ -38,12 +44,17 @@ public class SsheMain {
                 System.out.println();
             }
         };
-        parseConf(commandLine);
+        parseConf(configFile);
         executeAndPrintCost(start);
     }
 
     private static void executeAndPrintCost(long start) {
-        executeOperations();
+        try {
+            executeOperations();
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+        }
 
         long costMillis = System.currentTimeMillis() - start;
         SsheConf.console.println("\r\n\r\n==Over cost " + Util.humanReadableDuration(costMillis) + "==");
@@ -60,8 +71,8 @@ public class SsheMain {
         SsheConf.parseConf(configurationContent);
     }
 
-    private static void parseConf(CommandLine commandLine) throws IOException {
-        SsheConf.parseConf(new File(commandLine.getOptionValue('f', "sshe.conf")));
+    private static void parseConf(File configFile) throws IOException {
+        SsheConf.parseConf(configFile);
     }
 
     private static CommandLine parseCommandLine(String[] args) throws ParseException {

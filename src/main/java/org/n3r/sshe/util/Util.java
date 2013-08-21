@@ -29,9 +29,9 @@ public class Util {
 
         StringBuilder sb = new StringBuilder(64);
         if (days > 0) sb.append(days).append(" Days ");
-        if (hours > 0 ) sb.append(hours).append(" Hours ");
-        if (minutes > 0 ) sb.append(minutes).append(" Minutes ");
-        if (seconds > 0 ) sb.append(seconds).append(" Seconds");
+        if (hours > 0) sb.append(hours).append(" Hours ");
+        if (minutes > 0) sb.append(minutes).append(" Minutes ");
+        if (seconds > 0) sb.append(seconds).append(" Seconds");
 
         return sb.toString().trim();
     }

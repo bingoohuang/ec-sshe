@@ -42,7 +42,7 @@ public class OperationsParser implements SectionParser {
             commandType = matcher.group(1);
             commandLine = matcher.group(2);
         } else {
-            commandType = "exec";
+            commandType = "shell";
             commandLine = parsedLine;
         }
 
@@ -55,6 +55,7 @@ public class OperationsParser implements SectionParser {
 
     private HostOperation parseOperationCommand(String commandType, String commandLine) {
         if ("exec".equals(commandType)) return new ExecOperation(commandLine);
+        if ("shell".equals(commandType)) return new ShellOperation(commandLine);
         if ("sftp".equals(commandType)) return new SftpOperation(commandLine);
         if ("scp".equals(commandType)) return new ScpOperation(commandLine);
         if ("sleep".equals(commandType)) return new SleepOperation(commandLine);

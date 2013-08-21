@@ -1,9 +1,9 @@
 package org.n3r.sshe.operation;
 
 import com.google.common.base.Throwables;
-import org.apache.commons.io.IOUtils;
+import org.n3r.sshe.SsheConf;
 import org.n3r.sshe.SsheHost;
-import org.n3r.sshe.ssh.Shell;
+import org.n3r.sshe.ssh.Exec;
 
 public class ExecOperation extends HostOperation {
     private final String commandLine;
@@ -14,16 +14,9 @@ public class ExecOperation extends HostOperation {
 
     @Override
     protected void executeImpl(SsheHost ssheHost, HostOperation lastOperation) {
-        ssheHost.tryCreateChannelShell();
-
+        SsheConf.console.println("[exec] " + commandLine);
         try {
-            if (lastOperation != null && !(lastOperation instanceof ExecOperation)) {
-                IOUtils.write("\n", ssheHost.getOutputStream());
-                Shell.waitUntilExpect(ssheHost, "$");
-            }
-
-            IOUtils.write(commandLine + "\n", ssheHost.getOutputStream());
-            Shell.waitUntilExpect(ssheHost, "$");
+            Exec.exec(ssheHost.getSession(), commandLine);
         } catch (Exception e) {
             throw Throwables.propagate(e);
         }

@@ -50,7 +50,7 @@
                     <constraints/>
                     <properties>
                       <rows value="0"/>
-                      <text value="*settings&#10;charset=UTF-8&#10;excludeLinePattern=^[|-]  &#10;&#10;*hosts&#10;10.142.164.110 webapp {AES}Dy74lVpWubFzwPfdgyQZtQ==  &#10;&#10;*operations &#10;cd n3r-flume-1.1-dist/flumelog/&#10;./showHeartBeat.sh &#10;./showBuynow.sh"/>
+                      <text value=""/>
                     </properties>
                   </component>
                 </children>

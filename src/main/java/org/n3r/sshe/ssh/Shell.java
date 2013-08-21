@@ -21,29 +21,33 @@ public class Shell {
         char[] buff = new char[1024];
         try {
             int read;
-            StringBuilder response = new StringBuilder();
             while ((read = is.read(buff)) != -1) {
-                response.append(buff, 0, read);
+                String response = new String(buff, 0, read);
+                filterResponse(response);
                 if (response.indexOf(expect) >= 0) break;
             }
 
             while (is.ready()) {
-                if ((read = is.read(buff)) != -1)
-                    response.append(buff, 0, read);
+                read = is.read(buff);
+                String response = new String(buff, 0, read);
+                filterResponse(response);
             }
-
-            filterResponse(response);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private static void filterResponse(StringBuilder response) {
+
+    private static void filterResponse(String response) {
+        // remove ANSI terminal escape sequence
+        // http://stackoverflow.com/questions/14652538/remove-ascii-color-codes
+        response = response.replaceAll("\u001B\\[[;\\d]*m", "");
+
         if (!excludeLinePatternParsed) {
             excludeLinePatternParsed = true;
             String excludeLinePattern = SsheConf.settings.get(SettingKey.excludeLinePattern);
             if (StringUtils.isNotEmpty(excludeLinePattern))
-                Shell.excludeLinePattern = Pattern.compile(excludeLinePattern);
+                Shell.excludeLinePattern = Pattern.compile(excludeLinePattern, Pattern.MULTILINE);
         }
 
         // Response text will add some \r and some other characters unexpected.
@@ -53,7 +57,7 @@ public class Shell {
             String line = response.substring(start, linePos);
             // Response text will add some \r and some other characters unexpected.
 
-            line = line.replaceAll("\r", "").replaceAll("(\\[\\w.)+$", "");
+            // line = line.replaceAll("\r", "").replaceAll("(\\[\\w.)+$", "");
 
             if (excludeLinePattern == null || !excludeLinePattern.matcher(line).find())
                 SsheConf.console.println(line);
@@ -78,6 +82,8 @@ public class Shell {
         PipedOutputStream poos = new PipedOutputStream();
         PipedInputStream pois = new PipedInputStream(poos);
         channel.setOutputStream(poos, true);
+
+        //channel.setPtyType("dumb");
 
         channel.connect(10 * 1000);
 
