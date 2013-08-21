@@ -6,7 +6,7 @@
 
     <groupId>org.n3r</groupId>
     <artifactId>ec-sshe</artifactId>
-    <version>0.2.2.SNAPSHOT</version>
+    <version>0.2.2</version>
 
     <dependencies>
         <dependency>

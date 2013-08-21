@@ -28,10 +28,10 @@ public class Util {
         long seconds = TimeUnit.MILLISECONDS.toSeconds(millis);
 
         StringBuilder sb = new StringBuilder(64);
-        if (days > 0) sb.append(days).append(" Days ");
-        if (hours > 0) sb.append(hours).append(" Hours ");
-        if (minutes > 0) sb.append(minutes).append(" Minutes ");
-        if (seconds > 0) sb.append(seconds).append(" Seconds");
+        if (days > 0) sb.append(days).append(" days ");
+        if (hours > 0) sb.append(hours).append(" hours ");
+        if (minutes > 0) sb.append(minutes).append(" minutes ");
+        if (seconds > 0 || sb.length() == 0) sb.append(seconds).append(" seconds");
 
         return sb.toString().trim();
     }

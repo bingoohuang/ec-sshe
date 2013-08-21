@@ -1,6 +1,7 @@
 package org.n3r.sshe;
 
 import org.apache.commons.cli.*;
+import org.apache.commons.io.FileUtils;
 import org.n3r.sshe.gui.SsheForm;
 import org.n3r.sshe.util.Util;
 
@@ -13,8 +14,7 @@ public class SsheMain {
 
         File configFile = new File(commandLine.getOptionValue('f', "sshe.conf"));
         if (!configFile.exists()) {
-            System.err.println("config file does not exists or unspecified1");
-            System.exit(-1);
+            FileUtils.writeStringToFile(configFile, "*settings\r\n\r\n*hosts\r\n\r\n*operations\r\n\r\n");
         }
 
         if (commandLine.hasOption('g')) {
@@ -94,6 +94,9 @@ public class SsheMain {
     }
 
     private static void executeOperations() {
+        if (SsheConf.ssheHosts.size() == 0)
+            SsheConf.console.print("no hosts defined to run operations!");
+
         for (SsheHost ssheHost : SsheConf.ssheHosts)
             ssheHost.executeOperations();
     }
