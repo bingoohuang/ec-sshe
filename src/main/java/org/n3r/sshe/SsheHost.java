@@ -6,7 +6,6 @@ import com.jcraft.jsch.ChannelShell;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
-import static org.apache.commons.lang3.StringUtils.*;
 import org.n3r.sshe.operation.HostOperation;
 import org.n3r.sshe.security.AESEncrypter;
 import org.n3r.sshe.ssh.Shell;
@@ -15,7 +14,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
+
+import static org.apache.commons.lang3.StringUtils.startsWith;
+import static org.apache.commons.lang3.StringUtils.substring;
 
 public class SsheHost {
     private int hostIndex;
@@ -58,14 +59,18 @@ public class SsheHost {
     }
 
     private void disconnect() {
-        if (channelShell != null) {
-            channelShell.disconnect();
-            channelShell = null;
-        }
+        try {
+            if (channelShell != null) {
+                channelShell.disconnect();
+                channelShell = null;
+            }
 
-        if (session != null) {
-            session.disconnect();
-            session = null;
+            if (session != null) {
+                session.disconnect();
+                session = null;
+            }
+        } catch (Exception ex) {
+            // ignore
         }
     }
 
@@ -106,13 +111,18 @@ public class SsheHost {
         if (hostIndex > 0) SsheConf.console.println("\r\n");
         SsheConf.console.println("== " + getHostInfo() + " ==\r\n");
 
-        connect();
+        try {
+            connect();
 
-        HostOperation lastOperation = null;
-        for (HostOperation operation : SsheConf.operations)
-            lastOperation = operation.execute(this, lastOperation);
+            HostOperation lastOperation = null;
+            for (HostOperation operation : SsheConf.operations)
+                lastOperation = operation.execute(this, lastOperation);
 
-        disconnect();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        } finally {
+            disconnect();
+        }
     }
 
     public String getUser() {

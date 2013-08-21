@@ -49,12 +49,7 @@ public class SsheMain {
     }
 
     private static void executeAndPrintCost(long start) {
-        try {
-            executeOperations();
-        }
-        catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        executeOperations();
 
         long costMillis = System.currentTimeMillis() - start;
         SsheConf.console.println("\r\n\r\n==Over cost " + Util.humanReadableDuration(costMillis) + "==");

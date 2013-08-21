@@ -175,7 +175,7 @@ public class SsheForm {
     public static void runGUI(File configFile) throws IOException {
         ExecutorService executorService = Executors.newSingleThreadExecutor();
 
-        JFrame frame = new JFrame("SSH-E GUI v0.2.1");
+        JFrame frame = new JFrame("SSH-E GUI v0.2.2");
         frame.setContentPane(new SsheForm(frame, executorService, configFile).panel1);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
