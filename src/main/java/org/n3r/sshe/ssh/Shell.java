@@ -16,32 +16,36 @@ public class Shell {
     static boolean excludeLinePatternParsed = false;
     static Pattern excludeLinePattern = null;
 
-    public static void waitUntilExpect(SsheHost ssheHost, String expect) {
+    public static void waitUntilExpect(SsheHost ssheHost, String expect, String command) {
         InputStreamReader is = ssheHost.getChannleOutput();
         char[] buff = new char[1024];
+        StringBuilder fullResponse = new StringBuilder();
         try {
             int read;
             while ((read = is.read(buff)) != -1) {
                 String response = new String(buff, 0, read);
-                filterResponse(response);
+                filterResponse(fullResponse, response);
                 if (response.indexOf(expect) >= 0) break;
             }
 
             while (is.ready()) {
                 read = is.read(buff);
                 String response = new String(buff, 0, read);
-                filterResponse(response);
+                filterResponse(fullResponse, response);
             }
+
+            SsheConf.collect(ssheHost.getOperationCollector(), fullResponse, null);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-
-    private static void filterResponse(String response) {
+    private static void filterResponse(StringBuilder fullResponse, String response) {
         // remove ANSI terminal escape sequence
         // http://stackoverflow.com/questions/14652538/remove-ascii-color-codes
         response = response.replaceAll("\u001B\\[[;\\d]*m", "");
+
+        fullResponse.append(response);
 
         if (!excludeLinePatternParsed) {
             excludeLinePatternParsed = true;
@@ -70,7 +74,6 @@ public class Shell {
         SsheConf.console.print(response.substring(start));
     }
 
-
     public static void createShell(SsheHost ssheHost) throws Exception {
         PipedOutputStream pos = new PipedOutputStream();
         PipedInputStream pis = new PipedInputStream(pos);
@@ -83,6 +86,8 @@ public class Shell {
         PipedInputStream pois = new PipedInputStream(poos);
         channel.setOutputStream(poos, true);
 
+        String ptyType = SsheConf.settings.get(SettingKey.ptyType);
+        if (StringUtils.isNotEmpty(ptyType)) channel.setPtyType(ptyType);
         //channel.setPtyType("dumb");
 
         channel.connect(10 * 1000);

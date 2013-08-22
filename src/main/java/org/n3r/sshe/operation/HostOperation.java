@@ -12,6 +12,7 @@ public abstract class HostOperation {
     public HostOperation execute(SsheHost ssheHost, HostOperation lastOperation) {
         if (!matchSpecHost(ssheHost)) return lastOperation;
 
+        ssheHost.connect();
         executeImpl(ssheHost, lastOperation);
         return this;
     }

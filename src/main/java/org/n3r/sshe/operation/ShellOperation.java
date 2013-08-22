@@ -19,11 +19,11 @@ public class ShellOperation extends HostOperation {
         try {
             if (lastOperation != null && !(lastOperation instanceof ShellOperation)) {
                 IOUtils.write("\n", ssheHost.getOutputStream());
-                Shell.waitUntilExpect(ssheHost, "$");
+                Shell.waitUntilExpect(ssheHost, "$", null);
             }
 
             IOUtils.write(commandLine + "\n", ssheHost.getOutputStream());
-            Shell.waitUntilExpect(ssheHost, "$");
+            Shell.waitUntilExpect(ssheHost, "$", commandLine);
         } catch (Exception e) {
             throw Throwables.propagate(e);
         }

@@ -3,11 +3,10 @@ package org.n3r.sshe;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
+import org.n3r.sshe.collector.CollectorMatcher;
+import org.n3r.sshe.collector.OperationCollector;
 import org.n3r.sshe.operation.HostOperation;
-import org.n3r.sshe.parser.HostsParser;
-import org.n3r.sshe.parser.OperationsParser;
-import org.n3r.sshe.parser.SectionParser;
-import org.n3r.sshe.parser.SettingsParser;
+import org.n3r.sshe.parser.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,6 +19,7 @@ public class SsheConf {
     private static final Logger logger = LoggerFactory.getLogger(SsheConf.class);
 
     public static List<SsheHost> ssheHosts = Lists.newArrayList();
+    public static List<CollectorMatcher> collectors = Lists.newArrayList();
     public static List<HostOperation> operations = Lists.newArrayList();
     public static Map<String, String> settings = Maps.newHashMap();
     public static SsheOutput console;
@@ -60,6 +60,7 @@ public class SsheConf {
         if ("hosts".equals(sectionName)) return new HostsParser();
         if ("operations".equals(sectionName)) return new OperationsParser();
         if ("settings".equals(sectionName)) return new SettingsParser();
+        if ("collectors".equals(sectionName)) return new CollectorsParser();
 
         logger.warn("section {} was not recognized", sectionName);
 
@@ -71,5 +72,14 @@ public class SsheConf {
         if (charset == null) charset = Charset.defaultCharset().name();
 
         return charset;
+    }
+
+    public static void collect(OperationCollector operationCollector, StringBuilder fullResponse, String command) {
+        for (CollectorMatcher collectorMatcher : collectors) {
+            String response = fullResponse.toString();
+            if (collectorMatcher.match(response)) {
+                operationCollector.add(command, response);
+            }
+        }
     }
 }

@@ -12,10 +12,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class OperationsParser implements SectionParser {
-    // [exec] some commands
-    private final Pattern commandTypePattern = Pattern.compile("^\\[(.+)\\]\\s(.+)");
-    private final List<HostOperation> operations;
     private Logger logger = LoggerFactory.getLogger(OperationsParser.class);
+
+    // [exec] some commands
+    private final Pattern commandTypePattern = Pattern.compile("^\\[(.+)\\]\\s*(.+)");
+    private final List<HostOperation> operations;
 
     public OperationsParser() {
         this.operations = SsheConf.operations;

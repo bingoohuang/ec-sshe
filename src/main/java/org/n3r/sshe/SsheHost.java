@@ -6,6 +6,7 @@ import com.jcraft.jsch.ChannelShell;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
+import org.n3r.sshe.collector.OperationCollector;
 import org.n3r.sshe.operation.HostOperation;
 import org.n3r.sshe.security.AESEncrypter;
 import org.n3r.sshe.ssh.Shell;
@@ -14,6 +15,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 
 import static org.apache.commons.lang3.StringUtils.startsWith;
 import static org.apache.commons.lang3.StringUtils.substring;
@@ -27,6 +29,7 @@ public class SsheHost {
     private ChannelShell channelShell;
     private OutputStream outputStream;
     private InputStreamReader channelOutput;
+    private OperationCollector operationCollector;
 
     public SsheHost(int hostIndex, String host, String user, String pass) {
         this.hostIndex = hostIndex;
@@ -45,7 +48,13 @@ public class SsheHost {
         this(hostIndex, host, ssheHost.getUser(), ssheHost.getPass());
     }
 
-    private void connect() {
+    public void connect() {
+        if (session != null) return;
+
+        String hostInfo = getHostInfo();
+        SsheConf.console.println("\r\n\r\n== " + hostInfo + " ==\r\n");
+        operationCollector = new OperationCollector(hostInfo);
+
         JSch jSch = new JSch();
 
         try {
@@ -93,7 +102,7 @@ public class SsheHost {
             Shell.createShell(this);
 
             String expect = Objects.firstNonNull(SsheConf.settings.get(SettingKey.expect), "$");
-            Shell.waitUntilExpect(this, expect);
+            Shell.waitUntilExpect(this, expect, null);
         } catch (Exception e) {
             throw Throwables.propagate(e);
         }
@@ -107,16 +116,14 @@ public class SsheHost {
         }
     }
 
-    public void executeOperations() {
-        if (hostIndex > 0) SsheConf.console.println("\r\n");
-        SsheConf.console.println("== " + getHostInfo() + " ==\r\n");
-
+    public void executeOperations(List<OperationCollector> operationCollectors) {
         try {
-            connect();
-
             HostOperation lastOperation = null;
             for (HostOperation operation : SsheConf.operations)
                 lastOperation = operation.execute(this, lastOperation);
+
+            if (operationCollector != null && operationCollector.isNotEmpty())
+                operationCollectors.add(operationCollector);
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -149,4 +156,7 @@ public class SsheHost {
         return channelOutput;
     }
 
+    public OperationCollector getOperationCollector() {
+        return operationCollector;
+    }
 }

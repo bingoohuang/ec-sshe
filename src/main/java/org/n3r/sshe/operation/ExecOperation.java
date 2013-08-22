@@ -16,7 +16,7 @@ public class ExecOperation extends HostOperation {
     protected void executeImpl(SsheHost ssheHost, HostOperation lastOperation) {
         SsheConf.console.println("[exec] " + commandLine);
         try {
-            Exec.exec(ssheHost.getSession(), commandLine);
+            Exec.exec(ssheHost, commandLine);
         } catch (Exception e) {
             throw Throwables.propagate(e);
         }

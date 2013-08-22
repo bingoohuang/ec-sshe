@@ -1,12 +1,15 @@
 package org.n3r.sshe;
 
+import com.google.common.collect.Lists;
 import org.apache.commons.cli.*;
 import org.apache.commons.io.FileUtils;
+import org.n3r.sshe.collector.OperationCollector;
 import org.n3r.sshe.gui.SsheForm;
 import org.n3r.sshe.util.Util;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 public class SsheMain {
     public static void main(String[] args) throws Exception {
@@ -49,10 +52,13 @@ public class SsheMain {
     }
 
     private static void executeAndPrintCost(long start) {
+        SsheConf.console.print("= Operations result =");
+
         executeOperations();
 
         long costMillis = System.currentTimeMillis() - start;
-        SsheConf.console.println("\r\n\r\n==Over cost " + Util.humanReadableDuration(costMillis) + "==");
+        String costStr = Util.humanReadableDuration(costMillis);
+        SsheConf.console.println("\r\n\r\n== Over cost " + costStr + " ==");
     }
 
     public static void runGUI(String configurationContent, SsheOutput ssheOutput) throws IOException {
@@ -97,8 +103,15 @@ public class SsheMain {
         if (SsheConf.ssheHosts.size() == 0)
             SsheConf.console.print("no hosts defined to run operations!");
 
+        List<OperationCollector> operationCollectors = Lists.newArrayList();
         for (SsheHost ssheHost : SsheConf.ssheHosts)
-            ssheHost.executeOperations();
+            ssheHost.executeOperations(operationCollectors);
+
+        if (operationCollectors.size() > 0)
+            SsheConf.console.println("\r\n\r\n= Collectors result =");
+
+        for (OperationCollector collector : operationCollectors)
+            collector.displayCollectorResult();
     }
 
 }

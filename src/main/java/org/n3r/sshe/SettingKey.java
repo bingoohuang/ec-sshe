@@ -5,4 +5,5 @@ public interface SettingKey {
     String expect = "expect";
     String excludeLinePattern = "excludeLinePattern";
 
+    String ptyType = "ptyType";
 }
