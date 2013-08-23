@@ -69,9 +69,7 @@ public class SsheConf {
 
     public static String getCharset() {
         String charset = settings.get(SettingKey.charset);
-        if (charset == null) charset = Charset.defaultCharset().name();
-
-        return charset;
+        return charset != null ? charset : Charset.defaultCharset().name();
     }
 
     public static void collect(OperationCollector operationCollector, StringBuilder fullResponse, String command) {
