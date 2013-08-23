@@ -2,6 +2,7 @@ package org.n3r.sshe.operation;
 
 import com.google.common.base.Throwables;
 import org.apache.commons.io.IOUtils;
+import org.n3r.sshe.SsheConf;
 import org.n3r.sshe.SsheHost;
 import org.n3r.sshe.ssh.Shell;
 
@@ -22,7 +23,10 @@ public class ShellOperation extends HostOperation {
                 Shell.waitUntilExpect(ssheHost, "$", null);
             }
 
-            IOUtils.write(commandLine + "\n", ssheHost.getOutputStream());
+            String data = commandLine + "\n";
+            byte[] bytes = data.getBytes(SsheConf.getCharset());
+            IOUtils.write(bytes, ssheHost.getOutputStream());
+
             Shell.waitUntilExpect(ssheHost, "$", commandLine);
         } catch (Exception e) {
             throw Throwables.propagate(e);
