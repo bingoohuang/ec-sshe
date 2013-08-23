@@ -58,6 +58,8 @@ public class SsheForm {
             @Override
             public void actionPerformed(ActionEvent e) {
                 tabbedPane1.setSelectedIndex(1);
+                btnRun.setEnabled(false);
+
                 final SsheOutput ssheOutput = new SsheOutput() {
                     @Override
                     public void print(String x) {
@@ -83,11 +85,14 @@ public class SsheForm {
                         } catch (IOException e1) {
                             e1.printStackTrace();
                         }
+
+                        btnRun.setEnabled(true);
                         return null;
                     }
                 });
 
                 executorService.submit(task);
+
             }
         });
 

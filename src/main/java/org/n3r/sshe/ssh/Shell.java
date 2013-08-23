@@ -54,14 +54,10 @@ public class Shell {
                 Shell.excludeLinePattern = Pattern.compile(excludeLinePattern, Pattern.MULTILINE);
         }
 
-        // Response text will add some \r and some other characters unexpected.
         int start = 0;
         int linePos = response.indexOf("\n");
         while (linePos > 0) {
             String line = response.substring(start, linePos);
-            // Response text will add some \r and some other characters unexpected.
-
-            // line = line.replaceAll("\r", "").replaceAll("(\\[\\w.)+$", "");
 
             if (excludeLinePattern == null || !excludeLinePattern.matcher(line).find())
                 SsheConf.console.println(line);
@@ -81,14 +77,15 @@ public class Shell {
         ChannelShell channel = (ChannelShell) ssheHost.getSession().openChannel("shell");
 
         channel.setInputStream(pis, true);
+        // 设置一个足够大的终端大小，以免过长命令显示有问题
+        channel.setPtySize(8000, 30, 8000 * 10, 30 * 20);
 
         PipedOutputStream poos = new PipedOutputStream();
         PipedInputStream pois = new PipedInputStream(poos);
         channel.setOutputStream(poos, true);
 
         String ptyType = SsheConf.settings.get(SettingKey.ptyType);
-        if (StringUtils.isNotEmpty(ptyType)) channel.setPtyType(ptyType);
-        //channel.setPtyType("dumb");
+        if (StringUtils.isNotEmpty(ptyType)) channel.setPtyType(ptyType);  // eg. dump
 
         channel.connect(10 * 1000);
 
