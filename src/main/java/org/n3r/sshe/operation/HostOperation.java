@@ -2,6 +2,7 @@ package org.n3r.sshe.operation;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.n3r.sshe.SsheConf;
 import org.n3r.sshe.SsheHost;
 
 public abstract class HostOperation {
@@ -14,6 +15,9 @@ public abstract class HostOperation {
 
         ssheHost.connect();
         executeImpl(ssheHost, lastOperation);
+
+        SsheConf.confirmByOp();
+
         return this;
     }
 

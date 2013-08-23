@@ -5,6 +5,7 @@ import org.n3r.sshe.SsheConf;
 import org.n3r.sshe.SsheMain;
 import org.n3r.sshe.SsheOutput;
 import org.n3r.sshe.security.AESEncrypter;
+import org.n3r.sshe.util.Util;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -34,10 +35,13 @@ public class SsheForm {
     private JTextField textFieldKey;
     private JTextField textFieldDest;
     private JTextField textFieldSource;
+    private JButton btnContinue;
 
     public SsheForm(JFrame frame, final ExecutorService executorService, final File configFile) throws IOException {
         PrintStream out = new PrintStream(new CharOutputStream(textAreaResult, SsheConf.getCharset()), true);
         System.setErr(out);
+
+        btnContinue.setVisible(false);
 
         textAreaConfig.setText(FileUtils.readFileToString(configFile, "UTF-8"));
 
@@ -74,6 +78,18 @@ public class SsheForm {
                     @Override
                     public void println() {
                         updateTextArea("\r\n");
+                    }
+
+                    @Override
+                    public void waitConfirm() {
+                        updateTextArea("[Please press continue button to continue]");
+
+                        btnContinue.setVisible(true);
+                        btnContinue.setEnabled(true);
+
+                        while (btnContinue.isEnabled()) Util.sleepMillis(100);
+
+                        btnContinue.setVisible(false);
                     }
                 };
 
@@ -127,6 +143,12 @@ public class SsheForm {
             @Override
             public void focusLost(FocusEvent e) {
                 onTextFieldDestChange();
+            }
+        });
+        btnContinue.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                btnContinue.setEnabled(false);
             }
         });
     }

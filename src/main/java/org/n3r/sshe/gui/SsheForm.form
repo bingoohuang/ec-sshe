@@ -24,6 +24,12 @@
               <text value="Clean Result"/>
             </properties>
           </component>
+          <component id="b0664" class="javax.swing.JButton" binding="btnContinue">
+            <constraints/>
+            <properties>
+              <text value="Continue"/>
+            </properties>
+          </component>
         </children>
       </grid>
       <tabbedpane id="8a3" binding="tabbedPane1" default-binding="true">

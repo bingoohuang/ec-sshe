@@ -6,4 +6,9 @@ public interface SsheOutput {
     void println(String x);
 
     void println();
+
+    /**
+     * wait user to confirm the current output.
+     */
+    void waitConfirm();
 }

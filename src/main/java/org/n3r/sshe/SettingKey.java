@@ -6,4 +6,5 @@ public interface SettingKey {
     String excludeLinePattern = "excludeLinePattern";
 
     String ptyType = "ptyType";
+    String confirm = "confirm";
 }

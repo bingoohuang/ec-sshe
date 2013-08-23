@@ -116,7 +116,7 @@ public class SsheHost {
         }
     }
 
-    public void executeOperations(List<OperationCollector> operationCollectors) {
+    public HostOperation executeOperations(List<OperationCollector> operationCollectors) {
         try {
             HostOperation lastOperation = null;
             for (HostOperation operation : SsheConf.operations)
@@ -125,11 +125,14 @@ public class SsheHost {
             if (operationCollector != null && operationCollector.isNotEmpty())
                 operationCollectors.add(operationCollector);
 
+            return lastOperation;
+
         } catch (Exception ex) {
             ex.printStackTrace();
         } finally {
             disconnect();
         }
+        return null;
     }
 
     public String getUser() {

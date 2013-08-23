@@ -5,6 +5,7 @@ import org.apache.commons.cli.*;
 import org.apache.commons.io.FileUtils;
 import org.n3r.sshe.collector.OperationCollector;
 import org.n3r.sshe.gui.SsheForm;
+import org.n3r.sshe.operation.HostOperation;
 import org.n3r.sshe.util.Util;
 
 import java.io.File;
@@ -46,6 +47,19 @@ public class SsheMain {
             public void println() {
                 System.out.println();
             }
+
+            @Override
+            public void waitConfirm() {
+                System.out.print("[Please press enter key to continue.]");
+                try {
+                    char read = (char) System.in.read();
+                    if (read != '\n') System.out.println();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+
         };
         parseConf(configFile);
         executeAndPrintCost(start);
@@ -104,8 +118,11 @@ public class SsheMain {
             SsheConf.console.print("no hosts defined to run operations!");
 
         List<OperationCollector> operationCollectors = Lists.newArrayList();
-        for (SsheHost ssheHost : SsheConf.ssheHosts)
-            ssheHost.executeOperations(operationCollectors);
+        for (int i = 0, ii = SsheConf.ssheHosts.size(); i < ii; ++i ) {
+            SsheHost ssheHost = SsheConf.ssheHosts.get(i);
+            HostOperation lastOperation = ssheHost.executeOperations(operationCollectors);
+            if (lastOperation != null && i < ii - 1) SsheConf.confirmByHost();
+        }
 
         if (operationCollectors.size() > 0)
             SsheConf.console.println("\r\n\r\n= Collectors result =");

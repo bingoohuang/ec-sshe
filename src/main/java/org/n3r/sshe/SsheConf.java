@@ -2,7 +2,7 @@ package org.n3r.sshe;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import org.apache.commons.lang3.StringUtils;
+import static org.apache.commons.lang3.StringUtils.*;
 import org.n3r.sshe.collector.CollectorMatcher;
 import org.n3r.sshe.collector.OperationCollector;
 import org.n3r.sshe.operation.HostOperation;
@@ -39,13 +39,13 @@ public class SsheConf {
     private static void parseConfLines(BufferedReader br) throws IOException {
         SectionParser sectionParser = null;
         for (String line = br.readLine(); line != null; line = br.readLine()) {
-            line = StringUtils.trim(line);
+            line = trim(line);
 
             // Inore blank lines and comment lines
-            if (StringUtils.isEmpty(line) || line.startsWith("#")) continue;
+            if (isEmpty(line) || line.startsWith("#")) continue;
 
             if (line.startsWith("*")) { // new section
-                sectionParser = processSection(StringUtils.trim(line.substring(1)));
+                sectionParser = processSection(trim(line.substring(1)));
             } else if (sectionParser != null) {
                 sectionParser.parse(line);
             } else {
@@ -79,5 +79,26 @@ public class SsheConf {
                 operationCollector.add(command, response);
             }
         }
+    }
+
+    public static void confirmByOp() {
+        if (getConfirmType() == ConfirmType.ByOp) console.waitConfirm();
+    }
+
+    public static void confirmByHost() {
+        if (getConfirmType() == ConfirmType.ByHost) console.waitConfirm();
+    }
+
+
+    private static enum ConfirmType {ByOp, ByHost, None};
+    private static ConfirmType getConfirmType() {
+        String confirmType = settings.get(SettingKey.confirm);
+        if ("byOp".equalsIgnoreCase(confirmType)) return ConfirmType.ByOp;
+        if ("byHost".equalsIgnoreCase(confirmType)) return ConfirmType.ByHost;
+        if (isEmpty(confirmType) || "none".equalsIgnoreCase(confirmType)) return ConfirmType.None;
+
+        logger.warn("confirm {} was not recognized, it should be byOp, byHost or none", confirmType);
+
+        return ConfirmType.None;
     }
 }
