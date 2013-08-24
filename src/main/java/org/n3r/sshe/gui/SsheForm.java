@@ -1,6 +1,7 @@
 package org.n3r.sshe.gui;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.n3r.sshe.SsheConf;
 import org.n3r.sshe.SsheMain;
 import org.n3r.sshe.SsheOutput;
@@ -64,34 +65,7 @@ public class SsheForm {
                 tabbedPane1.setSelectedIndex(1);
                 btnRun.setEnabled(false);
 
-                final SsheOutput ssheOutput = new SsheOutput() {
-                    @Override
-                    public void print(String x) {
-                        updateTextArea(x);
-                    }
-
-                    @Override
-                    public void println(String x) {
-                        updateTextArea(x + "\r\n");
-                    }
-
-                    @Override
-                    public void println() {
-                        updateTextArea("\r\n");
-                    }
-
-                    @Override
-                    public void waitConfirm() {
-                        updateTextArea("[Please press continue button to continue]");
-
-                        btnContinue.setVisible(true);
-                        btnContinue.setEnabled(true);
-
-                        while (btnContinue.isEnabled()) Util.sleepMillis(100);
-
-                        btnContinue.setVisible(false);
-                    }
-                };
+                final SsheOutput ssheOutput = new GuiOutput(btnContinue, textAreaResult);
 
                 FutureTask<Void> task = new FutureTask<Void>(new Callable<Void>() {
                     @Override
@@ -175,25 +149,6 @@ public class SsheForm {
         textFieldDest.setText("{AES}" + aesEncrypter.encrypt(textFieldSource.getText()));
     }
 
-    public void updateTextArea(String str) {
-        Document document = textAreaResult.getDocument();
-
-        try {
-            for (int i = 0, ii = str.length(); i < ii; ++i) {
-                char ch = str.charAt(i);
-                if (ch == '\b') {
-                    document.remove(document.getLength() - 1, 1);
-                } else {
-                    document.insertString(document.getLength(), "" + ch, null);
-                }
-            }
-        } catch (BadLocationException e) {
-            e.printStackTrace();
-        }
-        // textAreaResult.append(str);
-        // scrolls the text area to the end of data
-        textAreaResult.setCaretPosition(document.getLength());
-    }
 
     public static void main(String[] args) throws IOException {
         runGUI(new File("sshe.conf"));

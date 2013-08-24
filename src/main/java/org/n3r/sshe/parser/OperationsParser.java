@@ -15,7 +15,7 @@ public class OperationsParser implements SectionParser {
     private Logger logger = LoggerFactory.getLogger(OperationsParser.class);
 
     // [exec] some commands
-    private final Pattern commandTypePattern = Pattern.compile("^\\[(.+)\\]\\s*(.+)");
+    private final Pattern commandTypePattern = Pattern.compile("^\\[(.+)\\]\\s*(.+)?");
     private final List<HostOperation> operations;
 
     public OperationsParser() {
@@ -60,6 +60,7 @@ public class OperationsParser implements SectionParser {
         if ("sftp".equals(commandType)) return new SftpOperation(commandLine);
         if ("scp".equals(commandType)) return new ScpOperation(commandLine);
         if ("sleep".equals(commandType)) return new SleepOperation(commandLine);
+        if ("confirm".equals(commandType)) return new ConfirmOperation(commandLine);
 
         logger.warn("unkown command type {}", commandType);
 

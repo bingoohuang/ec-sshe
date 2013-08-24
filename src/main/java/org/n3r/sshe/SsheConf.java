@@ -3,6 +3,8 @@ package org.n3r.sshe;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import static org.apache.commons.lang3.StringUtils.*;
+
+import org.apache.commons.lang3.StringUtils;
 import org.n3r.sshe.collector.CollectorMatcher;
 import org.n3r.sshe.collector.OperationCollector;
 import org.n3r.sshe.operation.HostOperation;
@@ -24,6 +26,7 @@ public class SsheConf {
     public static Map<String, String> settings = Maps.newHashMap();
     public static SsheOutput console;
     public static String key = "UpHJVmxF2GbXz3uMkGgmHw==";
+    private static int maxWaitMillis = -1;
 
     public static void parseConf(String configurationContent) throws IOException {
         BufferedReader br = new BufferedReader(new StringReader(configurationContent));
@@ -82,16 +85,22 @@ public class SsheConf {
     }
 
     public static void confirmByOp() {
-        if (getConfirmType() == ConfirmType.ByOp) console.waitConfirm();
+        if (parseConfirmType() == ConfirmType.ByOp)
+            console.waitConfirm(parseMaxWaitMilis());
     }
 
     public static void confirmByHost() {
-        if (getConfirmType() == ConfirmType.ByHost) console.waitConfirm();
+        if (parseConfirmType() == ConfirmType.ByHost)
+            console.waitConfirm(parseMaxWaitMilis());
+    }
+
+    public static void confirm(int maxWaitMilis) {
+        console.waitConfirm(maxWaitMilis);
     }
 
 
     private static enum ConfirmType {ByOp, ByHost, None};
-    private static ConfirmType getConfirmType() {
+    private static ConfirmType parseConfirmType() {
         String confirmType = settings.get(SettingKey.confirm);
         if ("byOp".equalsIgnoreCase(confirmType)) return ConfirmType.ByOp;
         if ("byHost".equalsIgnoreCase(confirmType)) return ConfirmType.ByHost;
@@ -101,4 +110,20 @@ public class SsheConf {
 
         return ConfirmType.None;
     }
+
+
+    public static int parseMaxWaitMilis() {
+        if (maxWaitMillis >= 0) return maxWaitMillis;
+
+        String confirmMaxWaitMillis = settings.get(SettingKey.confirmMaxWaitMillis);
+        if (StringUtils.isEmpty(confirmMaxWaitMillis)) maxWaitMillis = 0;
+        try {
+            maxWaitMillis = Integer.parseInt(confirmMaxWaitMillis);
+        } catch (NumberFormatException e) {
+            logger.warn("confirmMaxWaitMillis {} was not recognized, it should be number", maxWaitMillis);
+        }
+
+        return maxWaitMillis;
+    }
+
 }

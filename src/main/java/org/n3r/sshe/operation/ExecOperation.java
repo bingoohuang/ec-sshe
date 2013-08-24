@@ -13,12 +13,17 @@ public class ExecOperation extends HostOperation {
     }
 
     @Override
-    protected void executeImpl(SsheHost ssheHost, HostOperation lastOperation) {
+    protected void executeImpl(SsheHost ssheHost, HostOperation lastOperation, boolean isLastHostOperation) {
         SsheConf.console.println("[exec] " + commandLine);
         try {
             Exec.exec(ssheHost, commandLine);
         } catch (Exception e) {
             throw Throwables.propagate(e);
         }
+    }
+
+    @Override
+    protected boolean requireConnect() {
+        return true;
     }
 }

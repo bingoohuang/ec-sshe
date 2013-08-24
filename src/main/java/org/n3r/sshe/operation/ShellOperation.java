@@ -14,7 +14,7 @@ public class ShellOperation extends HostOperation {
     }
 
     @Override
-    protected void executeImpl(SsheHost ssheHost, HostOperation lastOperation) {
+    protected void executeImpl(SsheHost ssheHost, HostOperation lastOperation, boolean isLastHostOperation) {
         ssheHost.tryCreateChannelShell();
 
         try {
@@ -31,5 +31,10 @@ public class ShellOperation extends HostOperation {
         } catch (Exception e) {
             throw Throwables.propagate(e);
         }
+    }
+
+    @Override
+    protected boolean requireConnect() {
+        return true;
     }
 }

@@ -116,11 +116,13 @@ public class SsheHost {
         }
     }
 
-    public HostOperation executeOperations(List<OperationCollector> operationCollectors) {
+    public HostOperation executeOperations(List<OperationCollector> operationCollectors, boolean lastHost) {
         try {
             HostOperation lastOperation = null;
-            for (HostOperation operation : SsheConf.operations)
-                lastOperation = operation.execute(this, lastOperation);
+            for (int i = 0, ii = SsheConf.operations.size(); i < ii; ++i) {
+                HostOperation operation = SsheConf.operations.get(i);
+                lastOperation = operation.execute(this, lastOperation, lastHost && i + 1 == ii);
+            }
 
             if (operationCollector != null && operationCollector.isNotEmpty())
                 operationCollectors.add(operationCollector);

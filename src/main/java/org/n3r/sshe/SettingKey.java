@@ -7,4 +7,5 @@ public interface SettingKey {
 
     String ptyType = "ptyType";
     String confirm = "confirm";
+    String confirmMaxWaitMillis = "confirmMaxWaitMillis";
 }

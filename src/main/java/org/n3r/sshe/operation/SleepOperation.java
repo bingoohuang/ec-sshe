@@ -18,8 +18,13 @@ public class SleepOperation extends HostOperation {
     }
 
     @Override
-    protected void executeImpl(SsheHost ssheHost, HostOperation lastOperation) {
+    protected void executeImpl(SsheHost ssheHost, HostOperation lastOperation, boolean isLastHostOperation) {
         SsheConf.console.println("[sleep] " + commandLine);
         Util.sleepMillis(sleepMillis);
+    }
+
+    @Override
+    protected boolean requireConnect() {
+        return false;
     }
 }

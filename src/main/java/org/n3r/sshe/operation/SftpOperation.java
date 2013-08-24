@@ -23,12 +23,17 @@ public class SftpOperation extends HostOperation {
     }
 
     @Override
-    protected void executeImpl(SsheHost ssheHost, HostOperation lastOperation) {
+    protected void executeImpl(SsheHost ssheHost, HostOperation lastOperation, boolean isLastHostOperation) {
         SsheConf.console.println("[sftp] " + commandLine);
         try {
             Sftp.sftp(ssheHost.getSession(), cmd, p1, p2);
         } catch (Exception e) {
             throw Throwables.propagate(e);
         }
+    }
+
+    @Override
+    protected boolean requireConnect() {
+        return true;
     }
 }

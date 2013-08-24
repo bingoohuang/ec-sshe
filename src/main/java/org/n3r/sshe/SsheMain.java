@@ -3,6 +3,7 @@ package org.n3r.sshe;
 import com.google.common.collect.Lists;
 import org.apache.commons.cli.*;
 import org.apache.commons.io.FileUtils;
+import org.n3r.sshe.cmd.CmdOutput;
 import org.n3r.sshe.collector.OperationCollector;
 import org.n3r.sshe.gui.SsheForm;
 import org.n3r.sshe.operation.HostOperation;
@@ -32,35 +33,7 @@ public class SsheMain {
     private static void runAscommandLine(File configFile) throws IOException {
         long start = System.currentTimeMillis();
 
-        SsheConf.console = new SsheOutput() {
-            @Override
-            public void print(String x) {
-                System.out.print(x);
-            }
-
-            @Override
-            public void println(String x) {
-                System.out.println(x);
-            }
-
-            @Override
-            public void println() {
-                System.out.println();
-            }
-
-            @Override
-            public void waitConfirm() {
-                System.out.print("[Please press enter key to continue.]");
-                try {
-                    char read = (char) System.in.read();
-                    if (read != '\n') System.out.println();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
-
-        };
+        SsheConf.console = new CmdOutput();
         parseConf(configFile);
         executeAndPrintCost(start);
     }
@@ -120,7 +93,7 @@ public class SsheMain {
         List<OperationCollector> operationCollectors = Lists.newArrayList();
         for (int i = 0, ii = SsheConf.ssheHosts.size(); i < ii; ++i ) {
             SsheHost ssheHost = SsheConf.ssheHosts.get(i);
-            HostOperation lastOperation = ssheHost.executeOperations(operationCollectors);
+            HostOperation lastOperation = ssheHost.executeOperations(operationCollectors, i == ii - 1);
             if (lastOperation != null && i < ii - 1) SsheConf.confirmByHost();
         }
 

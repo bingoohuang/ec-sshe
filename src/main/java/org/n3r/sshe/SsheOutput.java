@@ -9,6 +9,7 @@ public interface SsheOutput {
 
     /**
      * wait user to confirm the current output.
+     * @param maxWaitMillis max wait millis. if value <= 0, then wait forever
      */
-    void waitConfirm();
+    void waitConfirm(int maxWaitMillis);
 }

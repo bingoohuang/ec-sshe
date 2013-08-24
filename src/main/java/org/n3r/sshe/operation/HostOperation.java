@@ -8,15 +8,18 @@ import org.n3r.sshe.SsheHost;
 public abstract class HostOperation {
     private String specHost;
 
-    protected abstract void executeImpl(SsheHost ssheHost, HostOperation lastOperation);
+    protected abstract void executeImpl(SsheHost ssheHost, HostOperation lastOperation, boolean isLastHostOperation);
 
-    public HostOperation execute(SsheHost ssheHost, HostOperation lastOperation) {
+    protected abstract boolean requireConnect();
+
+    public HostOperation execute(SsheHost ssheHost, HostOperation lastOperation, boolean isLastHostOperation) {
         if (!matchSpecHost(ssheHost)) return lastOperation;
 
-        ssheHost.connect();
-        executeImpl(ssheHost, lastOperation);
+        if (requireConnect()) ssheHost.connect();
 
-        SsheConf.confirmByOp();
+        executeImpl(ssheHost, lastOperation, isLastHostOperation);
+
+        if (!isLastHostOperation) SsheConf.confirmByOp();
 
         return this;
     }
