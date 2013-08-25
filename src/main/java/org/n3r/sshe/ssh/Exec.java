@@ -32,7 +32,7 @@ public class Exec {
             }
         } while (!channel.isClosed());
 
-        SsheConf.collect(ssheHost.getOperationCollector(), fullResponse, cmd);
+        SsheConf.collect(ssheHost.getOperationCollector(), fullResponse.toString(), cmd);
 
         in.close();
         channel.disconnect();

@@ -36,14 +36,12 @@ public class Sftp {
         channel.disconnect();
     }
 
-
-    public static class SsheProgressMonitor implements SftpProgressMonitor {
+    private static class SsheProgressMonitor implements SftpProgressMonitor {
         long count = 0;
         long max = 0;
         long sentSize;
         int msgLength;
         int maxMsgLength;
-
 
         public void init(int op, String src, String dest, long max) {
             this.max = max;

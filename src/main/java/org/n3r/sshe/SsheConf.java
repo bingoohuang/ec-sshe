@@ -75,12 +75,11 @@ public class SsheConf {
         return charset != null ? charset : Charset.defaultCharset().name();
     }
 
-    public static void collect(OperationCollector operationCollector, StringBuilder fullResponse, String command) {
+    public static void collect(OperationCollector operationCollector,
+                               String fullResponse, String command) {
         for (CollectorMatcher collectorMatcher : collectors) {
-            String response = fullResponse.toString();
-            if (collectorMatcher.match(response)) {
-                operationCollector.add(command, response);
-            }
+            if (collectorMatcher.match(fullResponse))
+                operationCollector.add(command, fullResponse);
         }
     }
 
@@ -120,7 +119,8 @@ public class SsheConf {
         try {
             maxWaitMillis = Integer.parseInt(confirmMaxWaitMillis);
         } catch (NumberFormatException e) {
-            logger.warn("confirmMaxWaitMillis {} was not recognized, it should be number", maxWaitMillis);
+            logger.warn("confirmMaxWaitMillis {} was not recognized, it should be number",
+                    maxWaitMillis);
         }
 
         return maxWaitMillis;

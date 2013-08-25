@@ -34,7 +34,7 @@ public class Shell {
                 filterResponse(fullResponse, response);
             }
 
-            SsheConf.collect(ssheHost.getOperationCollector(), fullResponse, null);
+            SsheConf.collect(ssheHost.getOperationCollector(), fullResponse.toString(), null);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

@@ -50,6 +50,7 @@ public class SsheMain {
 
     public static void runGUI(String configurationContent, SsheOutput ssheOutput) throws IOException {
         long start = System.currentTimeMillis();
+
         SsheConf.console = ssheOutput;
         parseConf(configurationContent);
         executeAndPrintCost(start);
