@@ -115,7 +115,11 @@ public class SsheConf {
         if (maxWaitMillis >= 0) return maxWaitMillis;
 
         String confirmMaxWaitMillis = settings.get(SettingKey.confirmMaxWaitMillis);
-        if (StringUtils.isEmpty(confirmMaxWaitMillis)) maxWaitMillis = 0;
+        if (StringUtils.isEmpty(confirmMaxWaitMillis)) {
+            maxWaitMillis = 0;
+            return maxWaitMillis;
+        }
+
         try {
             maxWaitMillis = Integer.parseInt(confirmMaxWaitMillis);
         } catch (NumberFormatException e) {
