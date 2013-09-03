@@ -82,6 +82,8 @@
                     <constraints/>
                     <properties>
                       <editable value="false"/>
+                      <lineWrap value="true"/>
+                      <wrapStyleWord value="true"/>
                     </properties>
                   </component>
                 </children>
