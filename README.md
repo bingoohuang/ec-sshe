@@ -39,7 +39,8 @@ excludeLinePattern= ^\||^--
 pkill -f flume
 rm -fr n3r-flume-1.1-dist
 [sftp] put ../n3r-flume-1.1-dist.tar.gz .
-tar zxf n3r-flume-1.1-dist.tar.gz
+# %{host} will be substituted to actual host ip defined in hosts section.
+[sftp] put ../flume.%{host}.conf flume.conf
 rm n3r-flume-1.1-dist.tar.gz
 cd n3r-flume-1.1-dist
 nohup java -jar n3r-flume-1.1.jar -i > /dev/null &
@@ -89,11 +90,18 @@ the operation format is:
 
 ** shell **
 
-the default operation type.
+In JSch, an shell channel is represented by the ChannelShell class.
+The default operation type.
+This is like using an interactive shell on your local computer.
+ (And it is normally used just for that: interactive use.)
 
 ** exec **
+In JSch, an exec channel is represented by the ChannelExec class.
+This is like executing a shell script on your local computer.
 
 ** sftp **
+
+Sftp Channel - browsing the remote file system, uploading/downloading remote files.
 
 examples:
 ```
@@ -102,6 +110,13 @@ examples:
 ```
 
 ** scp **
+
+A special exec channel for file transfer.
+
+examples:
+```
+[scp] localfile remotefile
+```
 
 ** sleep **
 
@@ -113,6 +128,7 @@ examples:
 
 ** confirm **
 
+Wait user to confirm the current operation progress by enter or click.
 examples:
 ```
 [confirm]
