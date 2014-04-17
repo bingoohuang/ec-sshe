@@ -24,6 +24,10 @@ public abstract class HostOperation {
         return this;
     }
 
+    protected String filterCommandLime(SsheHost ssheHost, String commandLine) {
+        return commandLine.replaceAll("%\\{host\\}", ssheHost.getHost());
+    }
+
     public void setSpecHost(String specHost) {
         this.specHost = specHost;
     }

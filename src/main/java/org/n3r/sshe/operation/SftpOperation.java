@@ -24,9 +24,9 @@ public class SftpOperation extends HostOperation {
 
     @Override
     protected void executeImpl(SsheHost ssheHost, HostOperation lastOperation, boolean isLastHostOperation) {
-        SsheConf.console.println("[sftp] " + commandLine);
+        SsheConf.console.println("[sftp] " + filterCommandLime(ssheHost, commandLine));
         try {
-            Sftp.sftp(ssheHost.getSession(), cmd, p1, p2);
+            Sftp.sftp(ssheHost.getSession(), cmd, filterCommandLime(ssheHost, p1), filterCommandLime(ssheHost, p2));
         } catch (Exception e) {
             throw Throwables.propagate(e);
         }

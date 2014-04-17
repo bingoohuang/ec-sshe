@@ -23,11 +23,12 @@ public class ShellOperation extends HostOperation {
                 Shell.waitUntilExpect(ssheHost, "$", null);
             }
 
-            String data = commandLine + "\n";
+            String realCommand = filterCommandLime(ssheHost, commandLine);
+            String data = realCommand + "\n";
             byte[] bytes = data.getBytes(SsheConf.getCharset());
             IOUtils.write(bytes, ssheHost.getOutputStream());
 
-            Shell.waitUntilExpect(ssheHost, "$", commandLine);
+            Shell.waitUntilExpect(ssheHost, "$", realCommand);
         } catch (Exception e) {
             throw Throwables.propagate(e);
         }

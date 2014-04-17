@@ -24,9 +24,10 @@ public class ScpOperation extends HostOperation {
 
     @Override
     protected void executeImpl(SsheHost ssheHost, HostOperation lastOperation, boolean isLastHostOperation) {
-        SsheConf.console.println("[scp] " + commandLine);
+
+        SsheConf.console.println("[scp] " + filterCommandLime(ssheHost, commandLine));
         try {
-            Scp.scp(ssheHost.getSession(), p1, p2);
+            Scp.scp(ssheHost.getSession(), filterCommandLime(ssheHost, p1), filterCommandLime(ssheHost,p2));
         } catch (Exception e) {
             throw Throwables.propagate(e);
         }

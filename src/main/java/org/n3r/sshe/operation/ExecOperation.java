@@ -14,9 +14,10 @@ public class ExecOperation extends HostOperation {
 
     @Override
     protected void executeImpl(SsheHost ssheHost, HostOperation lastOperation, boolean isLastHostOperation) {
-        SsheConf.console.println("[exec] " + commandLine);
+        String realCommandLine = filterCommandLime(ssheHost, commandLine);
+        SsheConf.console.println("[exec] " + realCommandLine);
         try {
-            Exec.exec(ssheHost, commandLine);
+            Exec.exec(ssheHost, realCommandLine);
         } catch (Exception e) {
             throw Throwables.propagate(e);
         }
