@@ -20,7 +20,7 @@ public class ShellOperation extends HostOperation {
         try {
             if (lastOperation != null && !(lastOperation instanceof ShellOperation)) {
                 IOUtils.write("\n", ssheHost.getOutputStream());
-                Shell.waitUntilExpect(ssheHost, "$", null);
+                Shell.waitUntilExpect(ssheHost);
             }
 
             String realCommand = filterCommandLime(ssheHost, commandLine);
@@ -28,7 +28,7 @@ public class ShellOperation extends HostOperation {
             byte[] bytes = data.getBytes(SsheConf.getCharset());
             IOUtils.write(bytes, ssheHost.getOutputStream());
 
-            Shell.waitUntilExpect(ssheHost, "$", realCommand);
+            Shell.waitUntilExpect(ssheHost);
         } catch (Exception e) {
             throw Throwables.propagate(e);
         }

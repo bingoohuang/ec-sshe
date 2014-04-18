@@ -1,5 +1,6 @@
 package org.n3r.sshe;
 
+import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import static org.apache.commons.lang3.StringUtils.*;
@@ -97,6 +98,9 @@ public class SsheConf {
         console.waitConfirm(maxWaitMilis);
     }
 
+    public static String getExpect() {
+        return Objects.firstNonNull(SsheConf.settings.get(SettingKey.expect), "$");
+    }
 
     private static enum ConfirmType {ByOp, ByHost, None};
     private static ConfirmType parseConfirmType() {

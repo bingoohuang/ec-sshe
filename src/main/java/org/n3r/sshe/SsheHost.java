@@ -1,6 +1,5 @@
 package org.n3r.sshe;
 
-import com.google.common.base.Objects;
 import com.google.common.base.Throwables;
 import com.jcraft.jsch.ChannelShell;
 import com.jcraft.jsch.JSch;
@@ -101,8 +100,7 @@ public class SsheHost {
         try {
             Shell.createShell(this);
 
-            String expect = Objects.firstNonNull(SsheConf.settings.get(SettingKey.expect), "$");
-            Shell.waitUntilExpect(this, expect, null);
+            Shell.waitUntilExpect(this);
         } catch (Exception e) {
             throw Throwables.propagate(e);
         }

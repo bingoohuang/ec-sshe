@@ -16,7 +16,7 @@ public class Shell {
     static boolean excludeLinePatternParsed = false;
     static Pattern excludeLinePattern = null;
 
-    public static void waitUntilExpect(SsheHost ssheHost, String expect, String command) {
+    public static void waitUntilExpect(SsheHost ssheHost) {
         InputStreamReader is = ssheHost.getChannleOutput();
         char[] buff = new char[1024];
         StringBuilder fullResponse = new StringBuilder();
@@ -25,7 +25,7 @@ public class Shell {
             while ((read = is.read(buff)) != -1) {
                 String response = new String(buff, 0, read);
                 filterResponse(fullResponse, response);
-                if (response.indexOf(expect) >= 0) break;
+                if (response.indexOf(SsheConf.getExpect()) >= 0) break;
             }
 
             while (is.ready()) {
