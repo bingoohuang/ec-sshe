@@ -12,9 +12,9 @@ just try to change sshe.conf(UTF-8 required) and run java -jar ec-sshe-x.x.x.jar
 charset= GBK
 
 *hosts
-10.142.194.155 webapp inddf6c
-10.142.194.156
-10.142.194.157
+10.12.14.15 username password
+10.12.14.16
+10.12.14.17
 
 *operations
 cd xxx/log
@@ -31,9 +31,9 @@ grep 18602506990 *.log
 excludeLinePattern= ^\||^--
 
 *hosts
-10.142.194.155 webapp inddf6c
-10.142.194.156
-10.142.194.157
+10.12.14.15 username password
+10.12.14.16
+10.12.14.17
 
 *operations
 pkill -f flume
